@@ -3,7 +3,7 @@ const ctx = gameCanvas.getContext("2d");
 
 const gameWidth = gameCanvas.width;
 const gameHeight = gameCanvas.height;
-const gameBorderColour = "#d5d5d5";
+const gameBorderColour = "#1c1c1f";
 const gameBgColour = "#eeeeee";
 const snakeColour = "lightgreen";
 const snakeBorderColour = "darkgreen";
@@ -58,6 +58,7 @@ function restartGame() {
 	currentPosition = startPosition;
 	snakePosition();
 	drawBoard();
+	moveRight();
 
 	if (!didGameEnd()) {
 		makeFood();
@@ -73,6 +74,18 @@ function resumeGame() {
 function pauseGame() {
 	isPaused = true;
 	clearTimeout(gameLoop);
+
+	ctx.save();
+	ctx.beginPath();
+	ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+	ctx.fillRect(0, 0, gameWidth, gameHeight);
+
+	ctx.fillStyle = 'white';
+	ctx.font = '30pt monospace';
+	ctx.textAlign = 'center';
+	ctx.fillText('PAUSED', 300, 200);
+
+	ctx.closePath();
 }
 
 function gameOver() {
@@ -85,7 +98,7 @@ function gameOver() {
 	ctx.fillRect(0, 0, gameWidth, gameHeight);
 	
 	ctx.fillStyle = 'white';
-	ctx.font = 'bold 40pt monospace';
+	ctx.font = '30pt monospace';
 	ctx.textAlign = 'center';
 	ctx.fillText('GAME OVER', 300, 200);
 
@@ -198,6 +211,26 @@ function didGameEnd() {
 	return hitLeftWall || hitRightWall || hitTopWall || hitBottomWall
 }
 
+function moveLeft() {
+	dx = -tile;
+	dy = 0;
+}
+
+function moveUp() {
+	dx = 0;
+	dy = -tile;
+}
+
+function moveRight() {
+	dx = tile;
+	dy = 0;
+}
+
+function moveDown() {
+	dx = 0;
+	dy = tile;
+}
+
 function changeDirection(event) {
 	let keyPressed;
 
@@ -215,33 +248,33 @@ function changeDirection(event) {
 	switch(keyPressed) {
 		case 37:
 			if (!goingRight) {
-				dx = -tile;
-				dy = 0;
+				moveLeft();
 			}
 			break;
 		case 38: 
 			if (!goingDown) {
-				dx = 0;
-				dy = -tile;
+				moveUp();
 			}
 			break;
 		case 39:
 			if (!goingLeft) {
-				dx = tile;
-				dy = 0;
+				moveRight();
 			}
 			break;
 		case 40: 
 			if (!goingUp) {
-				dx = 0;
-				dy = tile;
+				moveDown();
 			}
 			break;
 		case 32:
-			if (isPaused) {
-				resumeGame();
+			if (gameFinished) {
+				return;
 			} else {
-				pauseGame();
+				if (isPaused) {
+					resumeGame();
+				} else {
+					pauseGame();
+				}
 			}
 			break;
 		case 83:

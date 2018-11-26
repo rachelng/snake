@@ -3,11 +3,12 @@ html, body {
 	margin: 0;
 	font-family: monospace;
 	background-color: white;
+	color: #1c1c1f;
 }
 
 header {
-	margin-top: 5em;
-	margin-bottom: 3em;
+	margin-top: 6em;
+	margin-bottom: 4em;
 	text-align: center;
 }
 
@@ -15,6 +16,13 @@ aside {
 	text-align: left;
 	flex: 1;
 	width: 540px;
+}
+
+h1 {
+	font-size: 36px;
+	letter-spacing: 2px;
+	font-weight: normal;
+	text-transform: uppercase;
 }
 
 h2 {
