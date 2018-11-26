@@ -1,0 +1,76 @@
+html, body {
+	padding: 0;
+	margin: 0;
+	font-family: monospace;
+	background-color: white;
+}
+
+header {
+	margin-top: 5em;
+	margin-bottom: 3em;
+	text-align: center;
+}
+
+aside {
+	text-align: left;
+	flex: 1;
+	width: 540px;
+}
+
+h2 {
+	font-size: 16px;
+	text-transform: uppercase;
+}
+
+#container {
+	max-width: 1140px;
+	margin: 0 auto;
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+}
+
+#canvas_wrapper {
+	text-align: center;
+	flex: 2;
+}
+
+#score {
+	font-size: 30px;
+	margin-bottom: 2em;
+}
+
+.control_content {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-evenly;
+	margin-left: -0.5em;
+}
+
+.control {
+	margin-right: 1em;
+	text-align: center;
+	align-self: flex-end;
+}
+
+.control h3 {
+	font-family: 'Helvetica', san-serif;
+	height: 35px;
+}
+
+.control.arrow {
+	flex: 2;
+}
+
+.control.arrow h3 {
+	font-weight: 900;
+	font-size: 30px;
+}
+
+.control.space {
+
+}
+
+.control:last-child {
+	margin-right: 0;
+}

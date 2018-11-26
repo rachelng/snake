@@ -2,232 +2,52 @@
 <html>
 	<head>
 		<title>Snakespace 2</title>
+		<link rel="stylesheet" type="text/css" href="css/main.css">
 	</head>
 	<body>
-		<div id="score">0</div>
-		<canvas id="gameCanvas" width="500" height="400"></canvas>
+		<header id="head_wrapper">
+			<h1>Snake</h1>
+		</header>
+
+		<div id="container">
+			<section id="canvas_wrapper">
+				<canvas id="gameCanvas" width="600" height="400"></canvas>
+			</section>
+
+			<aside id="side">
+				<div class="score_wrapper">
+					<h2>Score</h2>
+					<div id="score">0</div>
+				</div>
+
+				<div class="control_wrapper">
+					<h2>Controls</h2>
+					<div class="control_content">
+						<div class="control arrow left">
+							<h3>&larr;</h3>
+							<p>Left</p>
+						</div>
+						<div class="control arrow up">
+							<h3>&uarr;</h3>
+							<p>Up</p>
+						</div>
+						<div class="control arrow right">
+							<h3>&rarr;</h3>
+							<p>Right</p>
+						</div>
+						<div class="control arrow down">
+							<h3 class="arrow">&darr;</h3>
+							<p>Down</p>
+						</div>
+						<div class="control text space">
+							<h3>Space</h3>
+							<p>Pause/Resume</p>
+						</div>
+					</div>
+				</div>
+			</aside>
+		</div>
 	
-		<script>
-			const gameCanvas = document.getElementById("gameCanvas");
-			const context = gameCanvas.getContext("2d");
-			
-			const gameWidth = gameCanvas.width;
-			const gameHeight = gameCanvas.height;
-			const gameBorderColour = "#d5d5d5";
-			const gameBgColour = "#eeeeee";
-			const snakeColour = "lightgreen";
-			const snakeBorderColour = "darkgreen";
-			const foodColour = "red";
-			const foodBorderColour = "darkred";
-			const startPosition = {'x': 150, 'y': 200};
-			const tile = 10;
-
-			let snake;
-			let changingDirection = false;
-			let foodX;
-			let foodY;
-			let dx = 10;
-			let dy = 0;
-			let score = 0;
-			let gameSpeed = 150;
-			let gameFinished = false;
-			let isPaused = false;
-			let gameLoop;
-
-			newGame();
-			makeFood();
-
-			document.addEventListener("keydown", changeDirection);
-
-			function newGame() {
-				snake = [];
-				currentPosition = startPosition;
-				snakeLength = 4;
-				gameFinished = false;
-
-				snakePosition();
-				startGame();
-			}
-
-			function startGame() {
-				if (didGameEnd()) gameOver();
-
-				gameLoop = setTimeout(function() {
-					changingDirection = false;
-					drawBoard();
-					drawFood();
-					moveSnake();
-					drawSnake();
-					startGame();
-				}, gameSpeed);
-			}
-
-			function resumeGame() {
-				setTimeout(startGame(), gameSpeed);
-			}
-
-			function pauseGame() {
-				clearTimeout(gameLoop);
-				isPaused = true;
-			}
-
-			function gameOver() {
-				clearTimeout(gameLoop);
-				gameFinished = true;
-				drawBoard();
-			}
-
-			function drawBoard() {
-				context.fillStyle = gameBgColour;
-				context.strokestyle = gameBorderColour;
-
-				context.fillRect(0, 0, gameWidth, gameHeight);
-				context.strokeRect(0, 0, gameWidth, gameHeight);
-			}
-
-			function drawSnakePart(snakePart) {
-				context.fillStyle = snakeColour;
-				context.strokestyle = snakeBorderColour;
-				context.fillRect(snakePart.x, snakePart.y, tile, tile);
-				context.strokeRect(snakePart.x, snakePart.y, tile, tile);
-			}
-
-			function drawFood() {
-				context.fillStyle = foodColour;
-				context.strokestyle = foodBorderColour;
-				context.fillRect(foodX, foodY, tile, tile);
-				context.strokeRect(foodX, foodY, tile, tile);
-			}
-
-			function snakePosition() {
-				let x = currentPosition['x'];
-				let y = currentPosition['y'];
-				let head = snake.push({x: x, y: y}); 
-				
-				for (var i = 0; i < snakeLength; i++) {
-					x -= 10
-					snake.push({
-						x: x,
-						y: y
-					});
-				}
-			}
-
-			function drawSnake() {
-				snake.forEach(drawSnakePart);
-			}
-
-			function moveSnake() {
-
-				let head = {x: snake[0].x + dx, y: snake[0].y + dy};
-
-				snake.unshift(head);
-				
-				const ateFood = snake[0].x === foodX && snake[0].y === foodY;
-
-				if (ateFood) {
-					score += 10;
-					gameSpeed -= 5;
-
-					updateScore();
-					makeFood();
-				} else {
-					snake.pop();
-				}
-			}
-
-			function updateScore() {
-				document.getElementById('score').innerHTML = score;
-			}
-
-			function randomTen(min, max) {
-				return Math.round((Math.random() * (max-min) + min) / tile) * tile;
-			}
-
-			function makeFood() {
-				foodX = randomTen(0, gameWidth - tile);
-				foodY = randomTen(0, gameHeight - tile);
-
-				snake.forEach(function isFoodOnSnake(snakePart) {
-					const foodIsOnSnake = snakePart.x == foodX && snakePart.y == foodY;
-
-					if (foodIsOnSnake) {
-						makeFood();
-					}
-				});
-			}
-
-			function didGameEnd() {
-				gameFinished = true;
-
-				for (let i = 4; i < snake.length; i++) {
-					const didCollide = snake[i].x === snake[0].x && snake[i].y === snake[0].y
-
-					if (didCollide) return true;
-				}
-
-				const hitLeftWall = snake[0].x < 0;
-				const hitRightWall = snake[0].x > gameWidth - tile;
-				const hitTopWall = snake[0].y < 0;
-				const hitBottomWall = snake[0].y > gameHeight - tile;
-
-				return hitLeftWall || hitRightWall || hitTopWall || hitBottomWall
-			}
-
-			function changeDirection(event) {
-				let keyPressed;
-
-				const goingUp = dy === -10;
-				const goingDown = dy === 10;
-				const goingRight = dx === 10;
-				const goingLeft = dx === -10;
-
-				if (changingDirection) return;
-				changingDirection = true;
-
-				if (event == null) {
-					keyPressed = window.event.keyCode;
-				} else {
-					keyPressed = event.keyCode;
-				}
-
-				switch(keyPressed) {
-					case 32:
-						if (isPaused) {
-							resumeGame();
-						} else {
-							pauseGame();
-						}
-						break;
-					case 37:
-						if (!goingRight) {
-							dx = -10;
-							dy = 0;
-						}
-						break;
-					case 38: 
-						if (!goingDown) {
-							dx = 0;
-							dy = -10;
-						}
-						break;
-					case 39:
-						if (!goingLeft) {
-							dx = 10;
-							dy = 0;
-						}
-						break;
-					case 40: 
-						if (!goingUp) {
-							dx = 0;
-							dy = 10;
-						}
-						break;
-					default:
-						break;
-				}
-			}
-
-		</script>
+		<script src="js/index.js"></script>
 	</body>
 </html>
