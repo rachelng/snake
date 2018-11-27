@@ -9,4 +9,3 @@ Use your `left`, `up`, `right`, `down` arrow keys to play. Hit `spacebar` to pau
 2. Make mobile friendly and responsive!
 3. Add a start screen.
 4. The ability to restart game.
-5. 
